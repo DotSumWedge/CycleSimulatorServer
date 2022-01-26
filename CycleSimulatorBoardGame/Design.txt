@@ -68,27 +68,31 @@ Possible rider actions:
     recover - 
         recovery is to put in a minimual effort in order to recover energy
 
-    pace - go to the front and drive the group foward
+    pace - go to the front and drive the group foward. 3 intensity levels for pacing:
+        light effort:
+        medium effort: doubles the dice result when calculating total group effort
+        heavy effort: tripples the dice result when calculating total group effort
+
     sprint - attempt to cross the sprint line first. Need to design leadout train mechanics. Probably count the teammates set to pace as leadout train 
     suprise - Done once rider can no longer provide value for their team. Drop out of the race and the payer draws a card
     attack - Find a lul in the action and try to break away from the group. 
     mark - Follow a specified rider and do their action. Useful when setting up attacks as marking an attack is more effecient than making the attack.
 
-
+Need to figure out how transitioning between terrain works 
 
 Modifiers:
     weather/terrain(riderStats)
 
 =====================================================================
 
-                        Example game turn - pace/attack
+                        Example game turns - pace/attack
 
 =====================================================================
 
 All riders are in the same group
 
 Map:
-    flat: 122
+    flat: 100
     flat/hill: 50
     hill: 100
     hill/wind : 100
@@ -125,9 +129,11 @@ Player 4:
 ultstone, windorf, gork, mork
 
 ultstone : flat-10
-    Effort: 5 (light)
+    Effort: 5 (light)       // light effort the dice result when calculating total group effort
     Dice result: 1
     Effect: energy--
+            group.effort += Dice result + ultstone.flatAttribute
+            ~=
             group.effort += 1 + 10
 
 windorf : flat-14
@@ -143,9 +149,9 @@ gork : flat-10
 
 
 mork : flat-12
-    Effort: 15 (hard)
+    Effort: 15 (heavy)
     Dice result:15
-    Effect: group.effort += (20 * 3) + 12   // hard effort tripples the dice result when calculating total group effort
+    Effect: group.effort += (20 * 3) + 12   // heavy effort tripples the dice result when calculating total group effort
 
 Group Effort = 122
     Effect: ultstone.energy--   // ultstone loses a second energy b/c group effort divided by 10 rounded down (12)
