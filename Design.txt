@@ -1,0 +1,205 @@
+objects:
+    riders
+    map tiles
+    event cards
+
+
+
+=====================================================================
+
+                                Game flow
+
+=====================================================================
+
+Prototype Map: 
+    2 sprints and 2 event card draws in a mostly flat start to the course. All sprints/card drops are spread out evenly
+    Only event cards in the hilly middle section of the course
+    sprint point and 2 event cards for the first rider over the highest mountain
+    quick DownHill section and a quick flat run into the finish
+    double sprint points for the person over the finish line
+
+If a rider runs out of energy they are out of the race and take a DNF
+
+2 Main phases of the Game:
+    1. Planning - All riders secretly decide on an action
+    2. Action & Resolution - Determine the outcome
+
+TODO:
+
+An event card describes when to play. Need to figure this out before coding
+Be able to save finished games and game states
+
+
+
+
+
+
+
+
+
+unsigned int turnCounter;
+
+while (true){
+
+    while(true){
+        if(getAllPlayerInputs()){
+            break;
+        }
+        wait(1 second)
+    }
+
+    resolveActions();
+    turnCounter++;
+}
+
+function resolveActions(){
+    
+}
+
+
+Possible actions:
+    play event card - rules unique to the card
+    Rider actions - list of actions any rider can take on any given turn
+    Rider ability - Some rider abilities can be used as an action, others are passive
+
+
+Possible rider actions(In order):
+
+    1. Dramatic dropout - Done once rider can no longer provide value for their team. Drop out of the race and the payer draws a card
+    2. mark - Follow a specified rider and do their action. Useful when trying to attack more effeciently
+            Can either mark an attacking teammate or mark another rider expected to attack
+    3.1 pace - go to the front and drive the group foward. 3 intensity levels for pacing:
+        light effort:
+        medium effort: doubles the dice result when calculating total group effort
+        heavy effort: tripples the dice result when calculating total group effort
+
+        roll all dice at the start of the turn for every rider and use the appropiate dice rolls.
+        For pacers the highest skill for the current terrain goes first
+        On the pacers turn where the terrain switches the rider selects the higher scaler of the 2 attributes 
+    3.2 follow - Follow the lead of the pacers to conserve energy
+    3.3 recover - recovery is to put in a minimual effort in order to recover energy
+    3.4 sprint - attempt to cross the sprint line first. Need to design leadout train mechanics. Probably count the teammates set to pace as leadout train
+        This will probably be done in the middle of the pacing/moving mechanic on the turn
+    4. attack - Find a lul in the action and try to break away from the group
+
+
+
+
+    
+
+
+Modifiers:
+    weather/terrain(riderStats)
+
+=====================================================================
+
+                        Example game turns - pace/attack
+
+=====================================================================
+
+All riders are in the same group
+
+Map:
+    flat: 100
+    flat/hill: 50
+    hill: 100
+    hill/wind : 100
+    wind/cobble: 50
+    cobble/flat: 50
+    flat/mountain: 150
+    mountain: 100
+    mountain/downhill: 75
+
+
+Player 1:
+    sprimli - follow
+    hofbrow - follow
+    ultstone - pace
+    windorf - pace
+Player 2:
+    florfindailyan - attack
+    imin - follow
+    tata - follow
+    enel - follow
+Player 3:
+    joe - follow
+    george - follow
+    vander - attack
+    spear - follow
+Player 4:
+    grazar - follow
+    gork - pace
+    mork - pace
+    speedDok - follow
+
+            Group 1
+    Pacers:
+ultstone, windorf, gork, mork
+
+ultstone : flat-10
+    Effort: 5 (light)       // light effort the dice result when calculating total group effort
+    Dice result: 1
+    Effect: energy--
+            group.effort += Dice result + ultstone.flatAttribute
+            ~=
+            group.effort += 1 + 10
+
+windorf : flat-14
+    Effort: 5 (light)
+    Dice result:12
+    Effect: group.effort += 5 + 14
+
+gork : flat-10
+    Effort: 10 (medium)
+    Dice result:5
+    Effect: energy--
+            group.effort += (5 * 2) + 10    // medium effort doubles the dice result when calculating total group effort
+
+
+mork : flat-12
+    Effort: 15 (heavy)
+    Dice result:15
+    Effect: group.effort += (20 * 3) + 12   // heavy effort tripples the dice result when calculating total group effort
+
+Group Effort = 122
+    Effect: ultstone.energy--   // ultstone loses a second energy b/c group effort divided by 10 rounded down (12)
+                                // is greater than ulstones dice result + terrain modifier. 
+            Group.Move(122)   // advance 
+
+    Followers:
+sprimli: 2 + 13 = 15 > 12   // rolls a 2 which leads to a pass. Rolling a one always results in a failure
+hofbrow: pass
+
+imin: failure- 7 + 3 = 11 < 12
+    Effect: imin.energy--
+tata: Pass
+enel: pass
+
+joe : pass
+george : pass
+spear : pass
+grazar : pass
+speedDok : pass
+
+
+
+
+        
+
+
+
+=====================================================================
+
+                        Example game turn - bunch sprint
+
+=====================================================================
+
+All riders are in the same group
+
+
+=====================================================================
+
+                        Example game turn - fractured sprint
+
+=====================================================================
+
